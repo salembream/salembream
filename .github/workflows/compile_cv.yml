@@ -1,0 +1,46 @@
+name: Build LaTeX document
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+
+      - uses: xu-cheng/latex-action@v3
+        with:
+          root_file: |
+            ./data/salem_cv.tex
+      
+      - uses: SichangHe/pdf2htmlEX-action@v0.0.2
+        with:
+          arguments: salem_cv.pdf salem_cv.html
+
+      - name: Copy
+        run: |
+          mkdir out
+          mkdir out_gh_pages
+          cp ./salem_cv.pdf ./out/salem_cv.pdf
+          cp ./salem_cv.html ./out_gh_pages/index.html
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: salem_cv_pdf
+          path: out/salem_cv.pdf
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: out_gh_pages
+          clean: true
+          single-commit: true
