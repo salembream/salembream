@@ -38,7 +38,15 @@ jobs:
           name: salem_cv_pdf
           path: out/salem_cv.pdf
 
-      - name: Deploy
+      
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./salem_cv.pdf
+            ./salem_cv.html
+
+      - name: Deploy to gh pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: out_gh_pages
